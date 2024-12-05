@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import Grid from '@mui/material/Grid2';
-import { Button, TextField, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import { Button, TextField, Typography, CircularProgress } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -18,6 +18,8 @@ const Home = () => {
     password: ''
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     if (encode) {
       setForm((prevState) => ({ ...prevState, encodeText: encode }));
@@ -31,19 +33,23 @@ const Home = () => {
   }, [decode]);
 
   const handleEncodeClick = async () => {
+    setIsLoading(true);
     const messageData = {
       message: form.decodeText,
       password: form.password,
     };
     await dispatch(encodeFetch(messageData));
+    setIsLoading(false);
   };
 
   const handleDecodeClick = async () => {
+    setIsLoading(true);
     const messageData = {
       message: form.encodeText,
       password: form.password,
     };
     await dispatch(decodeFetch(messageData));
+    setIsLoading(false);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,16 +93,24 @@ const Home = () => {
               variant="contained"
               sx={{ marginRight: 2 }}
               onClick={handleEncodeClick}
-              disabled={!form.password || !form.decodeText}
+              disabled={!form.password || !form.decodeText || isLoading}
             >
-              <ArrowDownwardIcon />
+              {isLoading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                <ArrowDownwardIcon />
+              )}
             </Button>
             <Button
               variant="contained"
               onClick={handleDecodeClick}
-              disabled={!form.password || !form.encodeText}
+              disabled={!form.password || !form.encodeText || isLoading}
             >
-              <ArrowUpwardIcon />
+              {isLoading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                <ArrowUpwardIcon />
+              )}
             </Button>
           </Grid>
         </Grid>
