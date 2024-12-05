@@ -1,7 +1,9 @@
+import Home from './features/Home/Home.tsx';
 
 const App = () => {
     return (
         <>
+          <Home/>
         </>
     );
 };
